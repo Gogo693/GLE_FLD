@@ -23,6 +23,7 @@ def main():
     torch.manual_seed(seed)
     torch.cuda.manual_seed_all(seed)
 
+    print('Setting gpu')
     cuda0 = torch.cuda.set_device(0)
     torch.cuda.current_device()
     torch.cuda.get_device_name(0)
