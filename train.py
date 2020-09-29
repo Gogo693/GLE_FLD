@@ -16,7 +16,7 @@ import utils
 parser = argument_parser()
 args = parser.parse_args()
 
-print('Arguments collected.')
+print('Arguments collected. ')
 
 def main():
     # random seed
