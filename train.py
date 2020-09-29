@@ -13,6 +13,70 @@ from models import Network
 from utils import cal_loss, Evaluator
 import utils
 
+parser = argument_parser()
+args = parser.parse_args()
+
+print('Arguments collected.')
+
+def main():
+    # random seed
+    seed = 1234
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+
+    print('Setting gpu')
+    cuda0 = torch.cuda.set_device(0)
+    torch.cuda.current_device()
+    torch.cuda.get_device_name(0)
+
+    # load dataset
+    if args.dataset[0] == 'deepfashion':
+        ds = pd.read_csv('./Anno/df_info.csv')
+        from dataset import DeepFashionDataset as DataManager
+    elif args.dataset[0] == 'fld':
+        ds = pd.read_csv('./Anno/fld_info.csv')
+        from dataset import FLDDataset as DataManager
+    else :
+        raise ValueError
+
+    print('dataset : %s' % (args.dataset[0]))
+    if not args.evaluate:
+        train_dm = DataManager(ds[ds['evaluation_status'] == 'train'], root=args.root)
+        train_dl = DataLoader(train_dm, batch_size=args.batchsize, shuffle=True)
+
+        if os.path.exists('models') is False:
+            os.makedirs('models')
+
+    test_dm = DataManager(ds[ds['evaluation_status'] == 'test'], root=args.root)
+    test_dl = DataLoader(test_dm, batch_size=args.batchsize, shuffle=False)
+
+    # Load model
+    print("Load the model...")
+    net = torch.nn.DataParallel(Network(dataset=args.dataset, flag=args.glem)).cuda()
+    if not args.weight_file == None:
+        weights = torch.load(args.weight_file)
+        if args.update_weight:
+            weights = utils.load_weight(net, weights)
+        net.load_state_dict(weights)
+
+    # evaluate only
+    if args.evaluate:
+        print("Evaluation only")
+        test(net, test_dl, 0)
+        return
+
+    # learning parameters
+    optimizer = torch.optim.Adam(net.parameters(), lr=args.learning_rate)
+    lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, 5, 0.1)
+
+    print('Start training')
+    for epoch in range(args.epoch):
+        lr_scheduler.step()
+        train(net, optimizer, train_dl, epoch)
+        test(net, test_dl, epoch)
+
+
 def train(net, optimizer, trainloader, epoch):
     train_step = len(trainloader)
     net.train()
@@ -71,69 +135,6 @@ def test(net, test_loader, epoch):
                       results['lm_dist'][4], results['lm_dist'][5], results['lm_dist'][6], results['lm_dist'][7],
                       results['lm_dist_all']))
 
-parser = argument_parser()
-args = parser.parse_args()
 
-print('Arguments collected.')
-
-
-# random seed
-seed = 1234
-np.random.seed(seed)
-torch.manual_seed(seed)
-torch.cuda.manual_seed_all(seed)
-
-print('Setting gpu')
-cuda0 = torch.cuda.set_device(0)
-torch.cuda.current_device()
-torch.cuda.get_device_name(0)
-
-# load dataset
-if args.dataset[0] == 'deepfashion':
-    ds = pd.read_csv('./Anno/df_info.csv')
-    from dataset import DeepFashionDataset as DataManager
-elif args.dataset[0] == 'fld':
-    ds = pd.read_csv('./Anno/fld_info.csv')
-    from dataset import FLDDataset as DataManager
-else :
-    raise ValueError
-
-print('dataset : %s' % (args.dataset[0]))
-if not args.evaluate:
-    train_dm = DataManager(ds[ds['evaluation_status'] == 'train'], root=args.root)
-    train_dl = DataLoader(train_dm, batch_size=args.batchsize, shuffle=True)
-
-    if os.path.exists('models') is False:
-        os.makedirs('models')
-
-test_dm = DataManager(ds[ds['evaluation_status'] == 'test'], root=args.root)
-test_dl = DataLoader(test_dm, batch_size=args.batchsize, shuffle=False)
-
-# Load model
-print("Load the model...")
-net = torch.nn.DataParallel(Network(dataset=args.dataset, flag=args.glem)).cuda()
-if not args.weight_file == None:
-    weights = torch.load(args.weight_file)
-    if args.update_weight:
-        weights = utils.load_weight(net, weights)
-    net.load_state_dict(weights)
-
-# evaluate only
-if args.evaluate:
-    print("Evaluation only")
-    test(net, test_dl, 0)
-    #return
-else:
-    # learning parameters
-    optimizer = torch.optim.Adam(net.parameters(), lr=args.learning_rate)
-    lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, 5, 0.1)
-
-    print('Start training')
-    for epoch in range(args.epoch):
-        lr_scheduler.step()
-        train(net, optimizer, train_dl, epoch)
-        test(net, test_dl, epoch)
-
-
-#if __name__ == '__main__':
-#    main()
+if __name__ == '__main__':
+    main()
