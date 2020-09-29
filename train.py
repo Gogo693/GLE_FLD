@@ -122,17 +122,17 @@ if not args.weight_file == None:
 if args.evaluate:
     print("Evaluation only")
     test(net, test_dl, 0)
-    return
+    #return
+else:
+    # learning parameters
+    optimizer = torch.optim.Adam(net.parameters(), lr=args.learning_rate)
+    lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, 5, 0.1)
 
-# learning parameters
-optimizer = torch.optim.Adam(net.parameters(), lr=args.learning_rate)
-lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, 5, 0.1)
-
-print('Start training')
-for epoch in range(args.epoch):
-    lr_scheduler.step()
-    train(net, optimizer, train_dl, epoch)
-    test(net, test_dl, epoch)
+    print('Start training')
+    for epoch in range(args.epoch):
+        lr_scheduler.step()
+        train(net, optimizer, train_dl, epoch)
+        test(net, test_dl, epoch)
 
 
 #if __name__ == '__main__':
