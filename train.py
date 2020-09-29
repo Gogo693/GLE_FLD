@@ -23,6 +23,10 @@ def main():
     torch.manual_seed(seed)
     torch.cuda.manual_seed_all(seed)
 
+    cuda0 = torch.cuda.set_device(0)
+    torch.cuda.current_device()
+    torch.cuda.get_device_name(0)
+
     # load dataset
     if args.dataset[0] == 'deepfashion':
         ds = pd.read_csv('./Anno/df_info.csv')
