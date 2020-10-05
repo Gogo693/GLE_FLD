@@ -26,11 +26,6 @@ def main():
     torch.manual_seed(seed)
     torch.cuda.manual_seed_all(seed)
 
-    print('Setting gpu')
-    torch.cuda.set_device(0)
-    torch.cuda.current_device()
-    torch.cuda.get_device_name(0)
-
     # load dataset
     if args.dataset[0] == 'deepfashion':
         ds = pd.read_csv('./Anno/df_info.csv')
@@ -54,7 +49,7 @@ def main():
 
     # Load model
     print("Load the model...")
-    net = torch.nn.DataParallel(Network(dataset=args.dataset, flag=args.glem)).cuda()
+    net = torch.nn.DataParallel(Network(dataset=args.dataset, flag=args.glem), device_ids=[0, 1]).cuda()
     if not args.weight_file == None:
         weights = torch.load(args.weight_file)
         if args.update_weight:
@@ -82,11 +77,6 @@ def main():
 
 
 def train(net, optimizer, trainloader, epoch):
-    print('Setting gpu')
-    torch.cuda.set_device(0)
-    torch.cuda.current_device()
-    torch.cuda.get_device_name(0)
-    
     train_step = len(trainloader)
     net.train()
 
