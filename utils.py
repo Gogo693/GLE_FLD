@@ -92,9 +92,11 @@ class Evaluator(object):
         transform.resize(imag, (224, 224))
         '''
         
+        '''
         for i, single_image in enumerate(img):
             drawImg(single_image, lm_pos_output[i])
             drawImg(single_image, sample['landmark_pos'][i].cpu())
+        '''
 
         #img = np.transpose(img[0], (-1, 0, 1))
         #print(img.shape)

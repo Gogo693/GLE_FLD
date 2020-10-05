@@ -12,6 +12,7 @@ from torch.utils.data import DataLoader
 from models import Network
 from utils import cal_loss, Evaluator
 import utils
+import time
 
 parser = argument_parser()
 args = parser.parse_args()
@@ -72,14 +73,21 @@ def main():
 
     print('Start training')
     for epoch in range(args.epoch):
+        start_epoch = time.time()
+        print('Starting Epoch: ' + str(epoch))
         lr_scheduler.step()
         train(net, optimizer, train_dl, epoch)
         test(net, test_dl, epoch)
+        print('Epoch ' + str(epoch) + 'ended in ' + str(time.time() - start_epoch))
 
 
 def train(net, optimizer, trainloader, epoch):
     train_step = len(trainloader)
     net.train()
+
+    cumul_duration = 0
+    start_time = time.time()
+
     for i, (sample, img) in enumerate(trainloader):
         for key in sample:
             sample[key] = sample[key].cuda()
@@ -90,9 +98,13 @@ def train(net, optimizer, trainloader, epoch):
         loss.backward()
         optimizer.step()
 
+        duration = time.time() - start_time
+        cumul_duration += duration
+        exp_ep_end = cumul_duration / (i+1) * (train_step - i) 
+
         if (i + 1) % 10 == 0:
-            print('Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}'
-                  .format(epoch + 1, args.epoch, i + 1, train_step, loss.item()))
+            print('Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}, Duration: {:.2f}, Epoch end: {:.0f}m {:.0f}s'
+                  .format(epoch + 1, args.epoch, i + 1, train_step, loss.item(), duration, exp_ep_end / 60, exp_ep_end % 60 ))
 
     save_file = 'model_%02d.pkl'
     print('Saving Model : ' + save_file % (epoch + 1))
@@ -111,7 +123,7 @@ def test(net, test_loader, epoch):
             #plt.imshow(sample['image_original'].numpy().swapaxes(0, 2))
             #plt.show()
 
-            image_name = sample['image_name']
+            #image_name = sample['image_name']
             #print(image_name)
 
             for key in sample:
@@ -121,7 +133,7 @@ def test(net, test_loader, epoch):
             #print(type(output))
             pos_map = output['lm_pos_map']
             #print(pos_map.size())
-            resh = pos_map.reshape(50, 8, -1)
+            #resh = pos_map.reshape(50, 8, -1)
             #print(resh.size())
             evaluator.add(output, sample, img)
             if (i + 1) % 100 == 0:
