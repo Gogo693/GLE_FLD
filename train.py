@@ -27,7 +27,7 @@ def main():
     torch.cuda.manual_seed_all(seed)
 
     print('Setting gpu')
-    cuda0 = torch.cuda.set_device(0)
+    torch.cuda.set_device(0)
     torch.cuda.current_device()
     torch.cuda.get_device_name(0)
 
@@ -82,6 +82,11 @@ def main():
 
 
 def train(net, optimizer, trainloader, epoch):
+    print('Setting gpu')
+    torch.cuda.set_device(0)
+    torch.cuda.current_device()
+    torch.cuda.get_device_name(0)
+    
     train_step = len(trainloader)
     net.train()
 
