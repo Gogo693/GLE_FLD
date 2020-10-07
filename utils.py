@@ -14,7 +14,8 @@ def drawKeyPts(im,keyp,col,th):
         cv2.circle(im,(x,y),size, col,thickness=th, lineType=8, shift=0)
         #print(x, y) 
     plt.imshow(im)
-    plt.show() 
+    plt.show()
+    plt.close() 
     return im 
 
 def drawImg(im,keyp, name):
