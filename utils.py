@@ -28,7 +28,7 @@ def drawImg(im,keyp, name):
 
     #plt.show()   
     print(name)
-    plt.savefig('./results/' + name.split('/')[4])
+    plt.savefig('./results/' + name.split('/')[3])
 
 def cal_loss(sample, output):
     batch_size, _, pred_w, pred_h = sample['image'].size()
