@@ -26,7 +26,8 @@ def drawImg(im,keyp):
         plt.scatter(x, y, color = 'r')
         #print(x, y) 
 
-    plt.show()   
+    #plt.show()   
+    plt.savefig('output.jpg')
 
 def cal_loss(sample, output):
     batch_size, _, pred_w, pred_h = sample['image'].size()
@@ -92,11 +93,12 @@ class Evaluator(object):
         transform.resize(imag, (224, 224))
         '''
         
-        '''
+        
         for i, single_image in enumerate(img):
             drawImg(single_image, lm_pos_output[i])
-            drawImg(single_image, sample['landmark_pos'][i].cpu())
-        '''
+            #drawImg(single_image, sample['landmark_pos'][i].cpu())
+            print(asd)
+        
 
         #img = np.transpose(img[0], (-1, 0, 1))
         #print(img.shape)

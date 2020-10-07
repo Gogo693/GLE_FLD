@@ -49,12 +49,13 @@ def main():
 
     # Load model
     print("Load the model...")
-    net = torch.nn.DataParallel(Network(dataset=args.dataset, flag=args.glem), device_ids=[0, 1]).cuda()
+    net = torch.nn.DataParallel(Network(dataset=args.dataset, flag=args.glem), device_ids=[0]).cuda()
     if not args.weight_file == None:
-        weights = torch.load(args.weight_file)
+        #weights = torch.load(args.weight_file)
         if args.update_weight:
             weights = utils.load_weight(net, weights)
-        net.load_state_dict(weights)
+        #net.load_state_dict(weights)
+        net.load_state_dict(torch.load(args.weight_file))
 
     # evaluate only
     if args.evaluate:
