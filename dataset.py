@@ -203,6 +203,7 @@ class FLDDataset(torch.utils.data.Dataset):
         image = image.float()
 
         ret = {}
+        ret['image_name'] = sample['image_name']
         ret['image'] = image
         ret['landmark_vis'] = landmark_vis
         ret['landmark_in_pic'] = landmark_in_pic
