@@ -27,6 +27,7 @@ def drawImg(im,keyp, name):
         #print(x, y) 
 
     #plt.show()   
+    print(name)
     plt.savefig('./results/' + name.split('/')[4])
 
 def cal_loss(sample, output):
