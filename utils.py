@@ -95,7 +95,7 @@ class Evaluator(object):
         
         
         for i, single_image in enumerate(img):
-            drawImg(single_image, lm_pos_output[i], sample['image_name'])
+            drawImg(single_image, lm_pos_output[i], str(i))
             #drawImg(single_image, sample['landmark_pos'][i].cpu())
         
 
