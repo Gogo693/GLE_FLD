@@ -104,7 +104,7 @@ class Evaluator(object):
             data = {}
             data['landmarks'] = []
             for cord in lm_pos_output[i]:
-                print(cord)
+                #print(cord)
                 data['landmarks'].append(float(cord[0]))
                 data['landmarks'].append(float(cord[1]))
             
