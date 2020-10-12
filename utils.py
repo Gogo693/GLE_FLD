@@ -105,8 +105,8 @@ class Evaluator(object):
             data['pose'] = []
             for cord in lm_pos_output[i]:
                 print(cord)
-                data['pose'].append(int(cord[0]))
-                data['pose'].append(int(cord[1]))
+                data['pose'].append(float(cord[0]))
+                data['pose'].append(float(cord[1]))
             
             with open('data.json', 'w') as outfile:
                 json.dump(data, outfile) 
