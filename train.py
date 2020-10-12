@@ -30,6 +30,9 @@ def main():
     if args.dataset[0] == 'deepfashion':
         ds = pd.read_csv('./Anno/df_info.csv')
         from dataset import DeepFashionDataset as DataManager
+    elif args.dataset[0] == 'cloth':
+        ds = pd.read_csv('./cloth_anno.csv')
+        from dataset import DeepFashionDataset as DataManager
     elif args.dataset[0] == 'fld':
         ds = pd.read_csv('./Anno/fld_info.csv')
         from dataset import FLDDataset as DataManager
