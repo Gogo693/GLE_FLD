@@ -102,7 +102,7 @@ class Evaluator(object):
             #drawImg(single_image, lm_pos_output[i], str(sample['image_name'][i]))
             #drawImg(single_image, sample['landmark_pos'][i].cpu())
             data = {}
-            data['people'] = []
+            data['pose'] = []
             for cord in lm_pos_output[i]:
                 print(cord)
                 data['pose'].append(int(cord[0]))
