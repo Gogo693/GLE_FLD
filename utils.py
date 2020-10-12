@@ -5,6 +5,7 @@ import numpy as np
 import cv2
 import matplotlib.pyplot as plt
 
+import json
 
 def drawKeyPts(im,keyp,col,th):
     for curKey in keyp:
@@ -98,8 +99,15 @@ class Evaluator(object):
         
         
         for i, single_image in enumerate(img):
-            drawImg(single_image, lm_pos_output[i], str(sample['image_name'][i]))
+            #drawImg(single_image, lm_pos_output[i], str(sample['image_name'][i]))
             #drawImg(single_image, sample['landmark_pos'][i].cpu())
+            data = {}
+            data['pose'] = []
+            for cord in lm_pos_output[i]:
+                data['pose'].append(cord[0])
+                data['pose'].append(cord[1])
+            
+            print(asd)
         
 
         #img = np.transpose(img[0], (-1, 0, 1))
