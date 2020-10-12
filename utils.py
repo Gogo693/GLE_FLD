@@ -102,11 +102,11 @@ class Evaluator(object):
             #drawImg(single_image, lm_pos_output[i], str(sample['image_name'][i]))
             #drawImg(single_image, sample['landmark_pos'][i].cpu())
             data = {}
-            data['pose'] = []
+            data['people'] = []
             for cord in lm_pos_output[i]:
                 print(cord)
-                data['pose'].append(cord[0])
-                data['pose'].append(cord[1])
+                data['pose'].append(int(cord[0]))
+                data['pose'].append(int(cord[1]))
             
             with open('data.json', 'w') as outfile:
                 json.dump(data, outfile) 
