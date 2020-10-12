@@ -108,7 +108,7 @@ class Evaluator(object):
                 data['landmarks'].append(float(cord[0]))
                 data['landmarks'].append(float(cord[1]))
             
-            with open('./landmarks/' + str(sample['image_name'][i].split('/')[2] + '.json', 'w') as outfile:
+            with open('./landmarks/' + str(sample['image_name'][i]).split('/')[2] + '.json', 'w') as outfile:
                 json.dump(data, outfile) 
 
             #print(asd)
