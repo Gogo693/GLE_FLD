@@ -107,6 +107,9 @@ class Evaluator(object):
                 data['pose'].append(cord[0])
                 data['pose'].append(cord[1])
             
+            with open('data.json', 'w') as outfile:
+                json.dump(data, outfile) 
+
             print(asd)
         
 
