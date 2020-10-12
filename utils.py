@@ -102,16 +102,16 @@ class Evaluator(object):
             #drawImg(single_image, lm_pos_output[i], str(sample['image_name'][i]))
             #drawImg(single_image, sample['landmark_pos'][i].cpu())
             data = {}
-            data['pose'] = []
+            data['landmarks'] = []
             for cord in lm_pos_output[i]:
                 print(cord)
-                data['pose'].append(float(cord[0]))
-                data['pose'].append(float(cord[1]))
+                data['landmarks'].append(float(cord[0]))
+                data['landmarks'].append(float(cord[1]))
             
-            with open('data.json', 'w') as outfile:
+            with open('./landmarks/' + str(sample['image_name'][i].split('/')[2]'.json', 'w') as outfile:
                 json.dump(data, outfile) 
 
-            print(asd)
+            #print(asd)
         
 
         #img = np.transpose(img[0], (-1, 0, 1))
